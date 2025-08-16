@@ -63,20 +63,22 @@ fn main() {
         let token: u8 = tokens[current_index];
         match token {
             0 => stack.push(1),
-            1 => match stack.pop() {
+            1 => match stack.last() {
                 Some(val) => println!("{}", val),
                 None => {
                     send_error("tried to print top value from empty stack.");
                     return
-                }
-            },
-            2 => match stack.last() {
-                Some(val) => stack.push(val.clone()),
-                None => {
-                    send_error("tried to duplicated top value of empty stack.");
+                },
+            }
+            2 => {
+                let length: usize = stack.len();
+                if length == 0 {
+                    send_error("tried to pop top value from empty stack.");
                     return
+                } else {
+                    stack.pop();
                 }
-            },
+            }
             3 => {
                 let length: usize = stack.len();
                 if length < 2 {
@@ -86,42 +88,22 @@ fn main() {
                 stack.swap(length-1, length-2);
             }
             4 => {
-                let right_addend: i64 = match stack.pop() {
-                    Some(val) => val,
-                    None => {
-                        send_error("tried to add top two values of stack with fewer elements.");
-                        return
-                    }
-                };
+                let length: usize = stack.len();
+                if length < 2 {
+                    send_error("tried to add two top values of a stack with fewer elements");
+                    return
+                }
 
-                let left_addend: i64 = match stack.pop() {
-                    Some(val) => val,
-                    None => {
-                        send_error("tried to add top two values of stack with fewer elements.");
-                        return
-                    }
-                };
-
-                stack.push(left_addend + right_addend);
+                stack.push(stack[length-2] + stack[length-1]);
             }
             5 => {
-                let subtrahend: i64 = match stack.pop() {
-                    Some(val) => val,
-                    None => {
-                        send_error("tried to add top two values of stack with fewer elements.");
-                        return
-                    }
-                };
+                let length: usize = stack.len();
+                if length < 2 {
+                    send_error("tried to subtract two top values of a stack with fewer elements");
+                    return
+                }
 
-                let minuend: i64 = match stack.pop() {
-                    Some(val) => val,
-                    None => {
-                        send_error("tried to add top two values of stack with fewer elements.");
-                        return
-                    }
-                };
-
-                stack.push(minuend - subtrahend);
+                stack.push(stack[length-2] - stack[length-1]);
             }
             6 => {
                 if stack.len() == 0 {
@@ -145,7 +127,7 @@ fn main() {
                 }
             }
             8 => {
-                let condition = match stack.pop() {
+                let condition = match stack.last() {
                     Some(val) => val,
                     None => {
                         send_error("no condition found for if-goto, stack does not have enough elements.");
@@ -153,7 +135,7 @@ fn main() {
                     }
                 };
 
-                if condition != 0 {
+                if condition != &0 {
                     current_index = marker.clone();
                 }
             }

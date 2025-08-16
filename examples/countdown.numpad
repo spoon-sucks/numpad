@@ -1,17 +1,1 @@
-create the number 5
-004040404
-
-place down a marker
-9
-
-print out the current count
-21
-
-subtract one
-05
-
-duplicate the number to use as the if condition
-2
-
-go back to the marker using the number we just duplicated, this means that when the number reaches 0 it will stop counting down.
-8
+004040404190518
